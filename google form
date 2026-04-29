@@ -1,58 +1,28 @@
-from flask import Flask, request, redirect
 import qrcode
+from urllib.parse import urlencode
 
-app = Flask(__name__)
-FORM_URL = "https://docs.google.com/forms/d/e/FORM_ID/viewform?entry.123456789="
+# Your Google Form link
+base_form_url = https://forms.gle/xcw2UjjA9udAxbse9
 
-@app.route('/')
-def home():
-    return '''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Location Capture</title>
-    </head>
-    <body style="text-align:center; margin-top:50px;">
-        <h2>Click the button to share your location</h2>
-        <button onclick="getLocation()" style="padding:10px 20px; font-size:16px;">
-            Get Location
-        </button>
+# Location and radius
+latitude = 10.9629
+longitude = 79.3912
+radius =2# meters
 
-        <script>
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendLocation);
-            } else {
-                alert("Geolocation not supported");
-            }
-        }
+# Data to attach in link
+params = {
+    "location": f"{latitude},{longitude}",
+    "radius": radius
+}
 
-        function sendLocation(position) {
-            let lat = position.coords.latitude;
-            let lon = position.coords.longitude;
-            let loc = "https://www.google.com/maps?q=" + lat + "," + lon;
+# Final link
+final_url = base_form_url + "?" + urlencode(params)
 
-            window.location.href = "/submit?loc=" + encodeURIComponent(loc);
-        }
-        </script>
-    </body>
-    </html>
-    '''
+print("Google Form Link:")
+print(final_url)
 
-@app.route('/submit')
-def submit():
-    loc = request.args.get('loc')
-    return redirect(FORM_URL + loc)
+# Generate QR Code
+img = qrcode.make(final_url)
+img.save("google_form_qr.png")
 
-if __name__ == '__main__':
-    # 🔗 Change this after hosting (important)
-    url = "http://127.0.0.1:5000/"
-
-    # 📱 Generate QR code
-    img = qrcode.make(url)
-    img.save("qr_code.png")
-
-    print("Server running at:", url)
-    print("QR code saved as qr_code.png")
-
-    app.run(debug=True)
+print("QR Code saved as google_form_qr.png")
