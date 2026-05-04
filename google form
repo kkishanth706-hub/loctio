@@ -7,7 +7,7 @@ base_form_url = https://forms.gle/xcw2UjjA9udAxbse9
 # Location and radius
 latitude = 10.9629
 longitude = 79.3912
-radius =2# meters
+radius =0.1# meters
 
 # Data to attach in link
 params = {
